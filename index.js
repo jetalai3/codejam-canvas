@@ -50,9 +50,7 @@ class SizeSwitcher {
 }
 
 async function draw(frame) {
-    if(!FRAMES[frame]) {
-        await getFrame(frame);
-    }
+    await getFrame(frame);
     if (Array.isArray(FRAMES[frame]) === true) {
         drawFromArray(FRAMES[frame]);
     } else {
@@ -106,6 +104,7 @@ function getFillStyle(cell) {
 }
 
 async function getFrame(link) {
+    if(FRAMES[link]) return;
     if(LINKS[link].split('.')[LINKS[link].split('.').length - 1] === 'json') {
         await fetch(LINKS[link])
             .then(res => res.json())
@@ -120,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.addCanvas();
     const sizeSwitcher = new SizeSwitcher();
     sizeSwitcher.addSizeSwitcher();
-    // getFrames(LINKS);
 });
 
 
