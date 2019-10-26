@@ -1,10 +1,10 @@
 const LINKS = {
-    FIRST: 'https://raw.githubusercontent.com/rolling-scopes-school/tasks/master/tasks/stage-2/codejam-canvas/data/4x4.json',
-    SECOND: 'https://raw.githubusercontent.com/rolling-scopes-school/tasks/master/tasks/stage-2/codejam-canvas/data/32x32.json',
-    THIRD: 'https://raw.githubusercontent.com/rolling-scopes-school/tasks/master/tasks/stage-2/codejam-canvas/data/image.png'
+    '1': 'https://raw.githubusercontent.com/rolling-scopes-school/tasks/master/tasks/stage-2/codejam-canvas/data/4x4.json',
+    '2': 'https://raw.githubusercontent.com/rolling-scopes-school/tasks/master/tasks/stage-2/codejam-canvas/data/32x32.json',
+    '3': 'https://raw.githubusercontent.com/rolling-scopes-school/tasks/master/tasks/stage-2/codejam-canvas/data/image.png'
 }
 
-const FRAMES = {};
+let FRAMES = {};
 
 class Canvas {
     constructor(pixelCount, getColor, getActiveTool, getPixelCount) {
@@ -32,9 +32,9 @@ class SizeSwitcher {
     const first = document.createElement('button');
     const second = document.createElement('button');
     const third = document.createElement('button');
-    first.id = 'first';
-    second.id = 'second';
-    third.id = 'third';
+    first.id = '1';
+    second.id = '2';
+    third.id = '3';
     first.innerText = '4x4';
     second.innerText = '32x32';
     third.innerText = 'image';
@@ -43,17 +43,20 @@ class SizeSwitcher {
     sizeSwitcher.appendChild(third);
     sizeSwitcher.style.border = '1px solid black';
     sizeSwitcher.addEventListener('click', (event) => {
-        draw(FRAMES[event.target.id.toUpperCase()]);
+        if (event.target.id !== ('sizeSwitcher')) draw(event.target.id.toUpperCase());
     });
     document.querySelector('body').appendChild(sizeSwitcher);
     }
 }
 
-function draw(frame) {
-    if (Array.isArray(frame) === true) {
-        drawFromArray(frame);
-    } else if (frame.split('.')[frame.split('.').length - 1] === 'png') {
-        drawFromImage(frame);
+async function draw(frame) {
+    if(!FRAMES[frame]) {
+        await getFrame(frame);
+    }
+    if (Array.isArray(FRAMES[frame]) === true) {
+        drawFromArray(FRAMES[frame]);
+    } else {
+        drawFromImage(FRAMES[frame]);
     };
 }
 
@@ -102,16 +105,14 @@ function getFillStyle(cell) {
     }
 }
 
-function getFrames(links) {
-    Object.keys(links).forEach(element => {
-        if(links[element].split('.')[links[element].split('.').length - 1] === 'json') {
-            fetch(LINKS[element])
-                .then(res => res.json())
-                .then(data => FRAMES[element] = data);
-        } else {
-            FRAMES[element] = links[element];
-        }
-    });
+async function getFrame(link) {
+    if(LINKS[link].split('.')[LINKS[link].split('.').length - 1] === 'json') {
+        await fetch(LINKS[link])
+            .then(res => res.json())
+            .then(data => FRAMES[link] = data);
+    } else {
+        FRAMES[link] = LINKS[link];
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -119,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.addCanvas();
     const sizeSwitcher = new SizeSwitcher();
     sizeSwitcher.addSizeSwitcher();
-    getFrames(LINKS);
+    // getFrames(LINKS);
 });
 
 
