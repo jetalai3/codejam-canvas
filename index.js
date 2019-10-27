@@ -4,10 +4,10 @@ const LINKS = {
     '3': 'https://raw.githubusercontent.com/rolling-scopes-school/tasks/master/tasks/stage-2/codejam-canvas/data/image.png'
 }
 
-let FRAMES = {};
+const FRAMES = {};
 
 class Canvas {
-    constructor(pixelCount, getColor, getActiveTool, getPixelCount) {
+    constructor() {
     
     }
 
@@ -16,19 +16,22 @@ class Canvas {
     canvas.id = 'canvas';
     canvas.width = '512';
     canvas.height = '512';
+    canvas.style.width = '512px';
+    canvas.style.height = '512px';
     canvas.style.border = '1px solid black';
-    document.querySelector('body').appendChild(canvas);
+    document.querySelector('.main').appendChild(canvas);
     }
 }
 
 class SizeSwitcher {
-    constructor(pixelCount, getColor, getActiveTool, getPixelCount) {
+    constructor() {
     
     }
 
     addSizeSwitcher() {
     const sizeSwitcher = document.createElement('div');
-    sizeSwitcher.id = 'sizeSwitcher';
+    sizeSwitcher.id = 'size-switcher';
+    sizeSwitcher.classList.toggle('control-block');
     const first = document.createElement('button');
     const second = document.createElement('button');
     const third = document.createElement('button');
@@ -38,14 +41,16 @@ class SizeSwitcher {
     first.innerText = '4x4';
     second.innerText = '32x32';
     third.innerText = 'image';
+    first.classList.toggle('control-button');
+    second.classList.toggle('control-button');
+    third.classList.toggle('control-button');
     sizeSwitcher.appendChild(first);
     sizeSwitcher.appendChild(second);
     sizeSwitcher.appendChild(third);
-    sizeSwitcher.style.border = '1px solid black';
     sizeSwitcher.addEventListener('click', (event) => {
-        if (event.target.id !== ('sizeSwitcher')) draw(event.target.id.toUpperCase());
+        if (event.target.id !== ('size-switcher')) draw(event.target.id.toUpperCase());
     });
-    document.querySelector('body').appendChild(sizeSwitcher);
+    document.querySelector('.main__controls').appendChild(sizeSwitcher);
     }
 }
 
@@ -115,10 +120,8 @@ async function getFrame(link) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const canvas = new Canvas();
-    canvas.addCanvas();
     const sizeSwitcher = new SizeSwitcher();
     sizeSwitcher.addSizeSwitcher();
+    const canvas = new Canvas();
+    canvas.addCanvas();
 });
-
-
